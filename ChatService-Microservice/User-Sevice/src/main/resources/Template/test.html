@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AJAX Example</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $("#getInfoButton").click(function() {
+        $.ajax({
+          url: "http://localhost:8080/api/auth/info", // Replace with your actual data source URL
+          type: "GET", // Adjust to POST if needed
+          success: function(data) {
+            $("#infoContainer").html(data);
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.error("Error:", textStatus, errorThrown);
+            $("#infoContainer").html("Error retrieving information.");
+          }
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+<button id="getInfoButton">Get Information</button>
+<div id="infoContainer"></div>
+</body>
+</html>
