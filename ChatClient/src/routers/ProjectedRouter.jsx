@@ -1,10 +1,17 @@
-import {Navigate} from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { isAuthenticated } from "../utils/utils";
 
-const ProjectedRoute = ({children}) => {
-    if(!isAuthenticated()){
+export const ProjectedRoute = ({ children }) => {
+    
+    
+    if (!isAuthenticated()) {
         return <Navigate to="/login" />
     }
     return children;
 }
-export default ProjectedRoute;
+export const NoAuthRoute=({children})=>{
+    if (isAuthenticated()) {
+        return <Navigate to="/notfound" />
+    }
+    return children;
+}

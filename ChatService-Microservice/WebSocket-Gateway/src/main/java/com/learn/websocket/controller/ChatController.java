@@ -42,7 +42,7 @@ public class ChatController {
         if (session != null && session.isOpen()) {
             try {
                 session.sendMessage(new TextMessage(message));
-                log.info("Message sent to user {}: {}", userId, message);
+                log.info("MessageWebSocket sent to user {}: {}", userId, message);
             } catch (IOException e) {
                 log.error("Error sending message to user {}: {}", userId, e.getMessage());
             }

@@ -10,8 +10,8 @@ import java.util.Map;
 
 @Component
 public class WebSocketSessionManager {
-    private final Map<String, WebSocketSession> sessions = Collections.synchronizedMap(new HashMap<>());
 
+    private final Map<String, WebSocketSession> sessions = Collections.synchronizedMap(new HashMap<>());
 
     public void addSession(WebSocketSession session, String userId) {
         sessions.put(userId,session);
@@ -27,4 +27,5 @@ public class WebSocketSessionManager {
     public Map<String, WebSocketSession> getSessions() {
         return sessions;
     }
+
 }

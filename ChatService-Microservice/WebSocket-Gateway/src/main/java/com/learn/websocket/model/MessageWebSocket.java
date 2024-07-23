@@ -1,4 +1,4 @@
-package com.learn.userservice.model;
+package com.learn.websocket.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,9 +9,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserRegistrationRequest {
-    private String username;
-    private String password;
-    private String email;
+public class MessageWebSocket {
+    private String targetId;
+    private String message;
 
 }

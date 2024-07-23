@@ -1,66 +1,57 @@
 package com.learn.userservice.controller;
 
-import com.learn.userservice.dto.AuthenticationRequest;
-import com.learn.userservice.dto.AuthenticationResponse;
+import com.learn.userservice.dto.UserResponse;
+import com.learn.userservice.exception.IdMismatchException;
 import com.learn.userservice.model.User;
-import com.learn.userservice.model.UserRegistrationRequest;
 import com.learn.userservice.repository.UserRepository;
-import com.learn.userservice.service.MyUserDetailsService;
 import com.learn.userservice.service.UserService;
 import com.learn.userservice.utils.JwtUtil;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
+import org.apache.coyote.Response;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api/auth")
-@RequiredArgsConstructor
+@RequestMapping("/api/user")
 public class UserController {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-    private final MyUserDetailsService myUserDetailsService;
-    private final UserService userService;
 
-    @GetMapping("/info")
-    public ResponseEntity<?> getInfo() {
-        return ResponseEntity.ok("UserController:getInfo");
-    }
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
-
-    @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-        log.info(authenticationRequest.toString());
-        UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
-        );
-        log.info("it goes here 2");
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtil.generateToken(userDetails.getUsername());
-
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRegistrationRequest request) {
-        try {
-            User newUser = userService.registerUser(request);
-            return ResponseEntity.ok(newUser);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    @GetMapping()
+    public ResponseEntity<?> getUser(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        String username = "";
+        if (jwtUtil.validateToken(token)) {
+            username = jwtUtil.getUsername(token);
         }
+        System.out.println(username);
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new IdMismatchException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        UserResponse userResponse = new UserResponse();
+        BeanUtils.copyProperties(user.get(), userResponse);
+
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable String id) {
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<?> getUserByName(@PathVariable String username) {
+       return ResponseEntity.ok(userService.getByUserName(username));
     }
 
 }

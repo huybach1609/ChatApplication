@@ -19,6 +19,9 @@
         <module>WebSocket-Gateway</module>
         <module>User-Sevice</module>
         <module>discovery-server</module>
+        <module>api-gateway</module>
+        <module>common-service</module>
+        <module>message-service</module>
     </modules>
 
 
