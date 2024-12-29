@@ -1,26 +1,25 @@
-import { createContext, useContext, useEffect, useId } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
-import axios from "axios";
-import { API_URL } from "../../constrains";
-import { getToken, getUser, getUserId } from "../../utils/utils";
-import WebSocketSingleton from "./WebSocketSingleton";
+import { getToken, getUserId, isAuthenticated } from "../utils/utils.jsx";
+import WebSocketSingleton from "../components/websocket/WebSocketSingleton.jsx";
 
 
-export const WebSocketContext = createContext(null);
+export const WebsocketContext = createContext(null);
 
-export const useWebSocket = () => useContext(WebSocketContext);
+export const useWebSocket = () => useContext(WebsocketContext);
 
+// eslint-disable-next-line react/prop-types
 export const WebSocketProvider = ({ children, url }) => {
     const [socket, setSocket] = useState(null);
-    const [check, setCheck] = useState("hello");
 
     useEffect(() => {
+
         const webSocketInstance = WebSocketSingleton.getInstance();
         const connect = async () => {
             await webSocketInstance.connect(url, getUserId(), getToken());
             setSocket(webSocketInstance.socket);
         }
-        if (!webSocketInstance.socket) {
+        if (!webSocketInstance.socket && isAuthenticated()) {
             connect();
         } else {
             setSocket(webSocketInstance.socket);
@@ -28,33 +27,38 @@ export const WebSocketProvider = ({ children, url }) => {
         return () => {
             webSocketInstance.disconnect();
         }
- 
     }, [url]);
-    const connect = async () => {
-        await webSocketInstance.connect(url, getUserId(), getToken());
-        setSocket(webSocketInstance.socket);
-    }
-    const disconnect = () => {
-        const webSocketInstance = WebSocketSingleton.getInstance();
-        webSocketInstance.disconnect();
-    }
 
+    const setOnMessage = (handler) => {
+        if (socket) {
+            socket.onmessage = handler;
+        }
+    };
+
+    // const connect = async () => {
+    //     await webSocketInstance.connect(url, getUserId(), getToken());
+    //     setSocket(webSocketInstance.socket);
+    // }
+    // const disconnect = () => {
+    //     const webSocketInstance = WebSocketSingleton.getInstance();
+    //     webSocketInstance.disconnect();
+    // }
 
     return (
-        <WebSocketContext.Provider value={{ socket, check }}>
+        <WebsocketContext.Provider value={{ socket, setOnMessage }}>
             {children}
-        </WebSocketContext.Provider>
+        </WebsocketContext.Provider>
     );
 
-           // if (!socket) {
-        //     console.log("webSocketContext: connect ws");
-        //     connect(getUserId());
-        //     console.log(url);
-        // }
-        // return () => {
-        //     connect.log("webSocketContext: disconnect");
-        //     disconnect();
-        // }
+    // if (!socket) {
+    //     console.log("webSocketContext: connect ws");
+    //     connect(getUserId());
+    //     console.log(url);
+    // }
+    // return () => {
+    //     connect.log("webSocketContext: disconnect");
+    //     disconnect();
+    // }
     // const connect = async (userId) => {
     //     const hostWebSocket = await getHostWebShocket();
     //     if (hostWebSocket == null) {

@@ -2,6 +2,10 @@ package com.learn.userservice.controller;
 
 import com.learn.userservice.dto.AuthenticationRequest;
 import com.learn.userservice.dto.AuthenticationResponse;
+import com.learn.userservice.dto.UserResponse;
+import com.learn.userservice.exception.IdMismatchException;
+import com.learn.userservice.exception.WrongPasswordException;
+import com.learn.userservice.exception.WrongUsernameException;
 import com.learn.userservice.model.User;
 import com.learn.userservice.dto.UserRegistrationRequest;
 import com.learn.userservice.service.MyUserDetailsService;
@@ -12,10 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,26 +47,39 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
         );
-        log.info("it goes here 2");
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(AuthenticationResponse.builder().jwt(jwt).build());
     }
+
 
 
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         log.info(authenticationRequest.toString());
-        UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
-        );
-        log.info("it goes here 2");
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        try {
+
+            UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtil.generateToken(userDetails.getUsername());
+
+           UserResponse user = userService.getByUserName(userDetails.getUsername());
+
+            return ResponseEntity.ok(AuthenticationResponse.builder().jwt(jwt)
+                            .message(user.getId())
+                    .build());
+        }catch (UsernameNotFoundException e){
+            throw new WrongUsernameException(e.getMessage());
+        }catch (BadCredentialsException e){
+            throw new WrongPasswordException("wrong password");
+        }
     }
 
     @PostMapping("/register")
@@ -72,5 +91,4 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }

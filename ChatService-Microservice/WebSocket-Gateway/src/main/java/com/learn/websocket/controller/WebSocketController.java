@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.InetAddress;
@@ -19,15 +20,17 @@ import java.util.concurrent.ConcurrentMap;
 public class WebSocketController {
     private static final Logger log = LoggerFactory.getLogger(WebSocketController.class);
 
-    @Value("${server.port}")
-    int aPort;
+    @Value("${nothing}")
+    String hostIp;
 
     private final ApplicationContext context;
     private final HazelcastInstance hazelcastInstance;
+    private Environment environment;
 
-    public WebSocketController(ApplicationContext context, @Qualifier("hazelcastInstanceConfig") HazelcastInstance hazelcastInstance) {
+    public WebSocketController(ApplicationContext context, @Qualifier("hazelcastInstanceConfig") HazelcastInstance hazelcastInstance, Environment environment) {
         this.context = context;
         this.hazelcastInstance = hazelcastInstance;
+        this.environment = environment;
     }
 
 
@@ -42,7 +45,8 @@ public class WebSocketController {
         log.info("port: {}", port);
         log.info("hostAddress: {}", e);
         log.info("hostName: {}", b);
-       return "localhost:" + port;
+        log.info(environment.getProperty("server.address"));
+       return hostIp + ":" +  port;
     }
     private String getLocalPort() {
         return String.valueOf(((ServletWebServerApplicationContext) context).getWebServer().getPort());

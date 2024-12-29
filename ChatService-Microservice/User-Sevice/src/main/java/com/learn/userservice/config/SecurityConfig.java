@@ -44,14 +44,15 @@ public class SecurityConfig {
     protected SecurityFilterChain configure(HttpSecurity http, AuthenticationManagerBuilder authenticationManagerBuilder, InfoEndpoint infoEndpoint) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.POST,
-                            "/api/auth/login").permitAll();
+                            auth.requestMatchers(HttpMethod.POST,
+                                    "/api/auth/login").permitAll();
                             auth.requestMatchers(
                                     "/api/auth/login",
                                     "/api/auth/info",
                                     "/api/auth/register",
                                     "/oauth2/**",
-                                    "/api/public" ).permitAll();
+                                    "/api/public", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml"
+                            ).permitAll();
                             auth.anyRequest().authenticated();
                         }
                 )

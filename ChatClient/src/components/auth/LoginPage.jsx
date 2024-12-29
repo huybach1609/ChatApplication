@@ -1,19 +1,28 @@
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-import { setToken, processLogin } from "../../utils/utils";
+import {setToken, processLogin, getToken, getUser, getCurrentUser, setUserLog, setUserId} from "../../utils/utils";
 import { OAUTH2_REDIRECT_URI} from "../../constrains";
 
 
 const LoginPage = () => {
 
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const code = params.get('code');
-        if (code) {
-            setToken(code);
-            window.location.href = '/info';
+    const importInfo =(token)=> {
+         if(getUser() == null) {
+            if (token) {
+                getCurrentUser()
+                    .then((response) => {
+                        console.log(response.data);
+                        setUserLog(JSON.stringify(response.data));
+                        setUserId(response.data.id);
+                        window.location.href = "/" + response.data.username + "/info";
+                    })
+                    .catch((error) => {
+                        console.log('Error fetching protected data:', error);
+                        console.log(error.response.data.error + " " + error.response.status)
+                    });
+            }
         }
-    }, []);
+    }
 
     const handleGoogleLogin = () => {
         // set the redirect URI cookie
@@ -37,7 +46,7 @@ const LoginPage = () => {
                 }
             }).then(data => {
                 setToken(data.jwt);
-                window.location.href = "/login?code=" + data.jwt;
+                importInfo(data.jwt);
             }).catch(error => {
                 console.log(error);
                 console.log("goes here 2");

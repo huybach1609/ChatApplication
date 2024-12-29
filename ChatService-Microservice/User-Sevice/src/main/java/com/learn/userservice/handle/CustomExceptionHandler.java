@@ -1,9 +1,8 @@
 package com.learn.userservice.handle;
 
+import com.learn.userservice.dto.AuthenticationResponse;
 import com.learn.userservice.dto.ErrorResponse;
-import com.learn.userservice.exception.IdMismatchException;
-import com.learn.userservice.exception.JwtAuthenticationException;
-import com.learn.userservice.exception.ResourceNotFoundException;
+import com.learn.userservice.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -35,6 +34,21 @@ public class CustomExceptionHandler {
     @ExceptionHandler(JwtAuthenticationException.class)
     public ResponseEntity<String> handleJwtAuthenticationException(JwtAuthenticationException ex) {
         return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
+    }
+    @ExceptionHandler(WrongUsernameException.class)
+    public ResponseEntity<?> handleWrongUsernameException(WrongUsernameException ex) {
+        return new ResponseEntity<>(AuthenticationResponse.builder()
+                .message(ex.getMessage())
+                .jwt("0")
+                .build(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(WrongPasswordException.class)
+    public ResponseEntity<?> handleWrongPasswordException(WrongPasswordException ex) {
+        return new ResponseEntity<>(AuthenticationResponse.builder()
+                .message(ex.getMessage())
+                .jwt("1")
+                .build(), HttpStatus.UNAUTHORIZED);
     }
 
 

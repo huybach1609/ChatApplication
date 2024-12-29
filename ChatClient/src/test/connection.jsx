@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { getUserId, getListFriend, getToken, setTarget } from '../../utils/utils';
+import { getUserId, getListFriend, getToken, setTarget } from '../utils/utils.jsx';
 import { Input, Select, SelectItem, Switch } from '@nextui-org/react';
-import MessageViewComponent from '../chat/MessageViewComponent';
-import { WebSocketContext } from './websocketContext';
+import MessageViewComponent from '../components/chat/MessageViewComponent.jsx';
+import { WebsocketContext } from '../context/WebsocketContext.jsx';
 import { useParams } from 'react-router-dom';
 
 const CheckConnection = () => {
     // const [socket, setSocket] = useState(null);
 
-    const info= useContext(WebSocketContext);
+    const info= useContext(WebsocketContext);
     
     let {userId} =useParams();
 

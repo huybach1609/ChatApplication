@@ -1,10 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import  {  useEffect, useState } from 'react';
 import { clearJwt, getToken, getCurrentUser, setUserId, setUserLog, getUser } from '../../utils/utils';
-import axios from 'axios';
-import { useWebSocket } from '../websocket/websocketContext';
-import { Avatar, Button, ButtonGroup } from '@nextui-org/react';
 
 const Info = () => {
+
   const [user, setUser] = useState(null);
   const [check, setCheck] = useState("");
 

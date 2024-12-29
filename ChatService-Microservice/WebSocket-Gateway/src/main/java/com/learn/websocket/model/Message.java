@@ -11,9 +11,9 @@ import java.util.Date;
 @NoArgsConstructor
 
 public class Message {
-   private MessageType type;
    private String sender;
    private String to;
    private String message;
    private Date time;
+   private MessageType type;
 }

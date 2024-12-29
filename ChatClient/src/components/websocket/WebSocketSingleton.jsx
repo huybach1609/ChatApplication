@@ -1,4 +1,3 @@
-// WebSocketSingleton.js
 import axios from 'axios';
 
 class WebSocketSingleton {

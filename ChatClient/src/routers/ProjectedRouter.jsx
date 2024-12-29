@@ -5,7 +5,7 @@ export const ProjectedRoute = ({ children }) => {
     
     
     if (!isAuthenticated()) {
-        return <Navigate to="/login" />
+        return <Navigate to="/auth/login" />
     }
     return children;
 }

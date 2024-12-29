@@ -11,6 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageResponse {
+    private String id;
     private String sender;
     private String to;
     private Date time;

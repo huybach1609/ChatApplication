@@ -57,7 +57,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         Gson gson = new Gson();
 
         MessageWebSocket input = gson.fromJson(payload, MessageWebSocket.class);
-        Message mess = new Message(MessageType.DELIVERY, sender, input.getTargetId(), input.getMessage(), new Date());
+        Message mess = new Message( sender, input.getTargetId(), input.getMessage(), new Date(), MessageType.DELIVERY);
 
         WebSocketSession targetSession = sessionManager.getSession(input.getTargetId());
         log.info("it go here");

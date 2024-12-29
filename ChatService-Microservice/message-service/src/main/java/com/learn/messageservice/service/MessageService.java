@@ -12,8 +12,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -33,8 +33,14 @@ public class MessageService {
         repository.save(message);
     }
 
+    public List<MessageResponse> getListMessagesById(String messageId, int limit) {
+        Message message = repository.findById(messageId).orElse(null);
+        List<MessageResponse> list = convertAndReverse(messageRepositoryCustom.getListMessageById(messageId, message.getSender(), message.getTo(), limit));
+        return list;
+    }
+
     @KafkaListener(topics = "sendMessage", groupId = "message-consumers")
-    public void processMessageQueue(MessageSendEvent messageSendEvent){
+    public void processMessageQueue(MessageSendEvent messageSendEvent) {
         log.info("get message: {}", messageSendEvent);
         Message message = new Message();
         BeanUtils.copyProperties(messageSendEvent, message);
@@ -42,13 +48,25 @@ public class MessageService {
     }
 
     public List<MessageResponse> getMessageByNumber(String sender, String to, int number) {
+        List<MessageResponse> list = convertAndReverse(messageRepositoryCustom.getMessageByNumber(sender, to, number));
+        return list;
+    }
 
-        return  messageRepositoryCustom.getMessageByNumber(sender, to, number).stream().map(
+    private List<MessageResponse> convertAndReverse(List<Message> list) {
+        List<MessageResponse> listResponse = list.stream().map(
                 mess -> {
                     MessageResponse messageResponse = new MessageResponse();
                     BeanUtils.copyProperties(mess, messageResponse);
                     return messageResponse;
                 }
-        ).toList();
+        ).collect(Collectors.toList());
+
+        Collections.reverse(listResponse);
+        return listResponse;
+    }
+
+    public MessageSendEvent getLastedMessages(List<String> userIds, String sender) {
+
+        return null;
     }
 }

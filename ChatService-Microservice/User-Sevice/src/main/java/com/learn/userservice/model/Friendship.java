@@ -2,14 +2,16 @@ package com.learn.userservice.model;
 
 import com.learn.userservice.enums.FriendshipStatus;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
 @Data
 @Entity
 @ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

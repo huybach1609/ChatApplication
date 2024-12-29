@@ -22,6 +22,7 @@
         <module>api-gateway</module>
         <module>common-service</module>
         <module>message-service</module>
+        <module>stomp-gateway</module>
     </modules>
 
 

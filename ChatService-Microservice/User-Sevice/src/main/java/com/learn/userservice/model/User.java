@@ -22,4 +22,7 @@ public class User {
     private String fullName;
     private String picture;
     private ConnectionStatus connectionStatus;
+    public User(String id){
+       this.id = id;
+    }
 }

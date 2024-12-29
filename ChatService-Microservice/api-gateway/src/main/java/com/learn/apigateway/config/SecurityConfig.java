@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +31,11 @@ public class SecurityConfig {
                           "/api/auth/info",
                           "/api/auth/register",
                           "/oauth2/**",
-                          "/api/public" ).permitAll();
+                          "/eureka/web",
+                          "/eureka/**",
+                          "/api/public","/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml", "/aggregate/**"
+
+                  ).permitAll();
                   auth.anyRequest().authenticated();
               })
               .sessionManagement(sessionManager -> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

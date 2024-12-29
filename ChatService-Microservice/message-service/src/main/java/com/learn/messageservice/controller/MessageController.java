@@ -1,5 +1,6 @@
 package com.learn.messageservice.controller;
 
+import com.learn.commonservice.dto.MessageSendEvent;
 import com.learn.messageservice.model.Message;
 import com.learn.messageservice.model.MessageResponse;
 import com.learn.messageservice.model.RelayMessageRequest;
@@ -33,4 +34,15 @@ public class MessageController {
     public List<MessageResponse> getMessage(@PathVariable String sender, @PathVariable String to, @RequestParam(defaultValue = "10") int number) {
         return messageService.getMessageByNumber(sender, to, number );
     }
+    @GetMapping()
+    public List<MessageResponse> getListMessagesById(@RequestParam String messageId , @RequestParam(defaultValue = "10") int limit) {
+        return messageService.getListMessagesById(messageId, limit);
+    }
+
+    @PostMapping("/lasted/{sender}")
+    public MessageSendEvent getLastedMessages(@RequestBody List<String> userIds, @PathVariable String sender) {
+       return messageService.getLastedMessages(userIds, sender);
+    }
+
+
 }

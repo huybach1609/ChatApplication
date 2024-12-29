@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -53,5 +55,12 @@ public class UserController {
     public ResponseEntity<?> getUserByName(@PathVariable String username) {
        return ResponseEntity.ok(userService.getByUserName(username));
     }
+    @GetMapping("/find")
+    public  ResponseEntity<?> findByUsernameOrFullName(@RequestParam String username, @RequestParam String fullName){
+        if ((username == null || username.isBlank()) && (fullName == null || fullName.isBlank())) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
 
+       return ResponseEntity.ok(userService.findByUsernameOrFullName(username, fullName));
+    }
 }

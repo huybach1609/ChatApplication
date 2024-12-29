@@ -1,15 +1,15 @@
 package com.learn.userservice.dto;
 
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 @Getter
+@Setter
+@Builder
 public class AuthenticationResponse {
-
-    private final String jwt;
-
-    public AuthenticationResponse(String jwt) {
-        this.jwt = jwt;
-    }
-
+    private String jwt;
+    private String message;
 }

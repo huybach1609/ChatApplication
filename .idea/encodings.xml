@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/User-Sevice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/WebSocket-Gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/api-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/common-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/discovery-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/message-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ChatService-Microservice/stomp-gateway/src/main/java" charset="UTF-8" />
+  </component>
+</project>
